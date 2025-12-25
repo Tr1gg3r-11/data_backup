@@ -166,6 +166,25 @@ bool ADBackuper::AllFile(string sourcefile, string targetdir)
     char path[PATH_MAX];
     strcpy(path, sourcefile.c_str());
     string targetfilename = targetdir + '/' + basename(path);
+    lstat(sourcefile.c_str(), &srcbuf);
+    if (S_ISLNK(srcbuf.st_mode))
+    {
+        if (backupLINK(sourcefile, targetfilename))
+        {
+            // cout << sourcefile << "备份成功！\n";
+            return true;
+        }
+        return false;
+    }
+    else if (S_ISFIFO(srcbuf.st_mode))
+    {
+        if (backupFIFO(sourcefile, targetfilename))
+        {
+            // cout << sourcefile << "备份成功！\n";
+            return true;
+        }
+        return false;
+    }
     stat(sourcefile.c_str(), &srcbuf);
     if (S_ISDIR(srcbuf.st_mode))
     {
@@ -185,24 +204,6 @@ bool ADBackuper::AllFile(string sourcefile, string targetdir)
         }
         return false;
     }
-    else if (S_ISLNK(srcbuf.st_mode))
-    {
-        if (backupLINK(sourcefile, targetfilename))
-        {
-            // cout << sourcefile << "备份成功！\n";
-            return true;
-        }
-        return false;
-    }
-    else if (S_ISFIFO(srcbuf.st_mode))
-    {
-        if (backupFIFO(sourcefile, targetfilename))
-        {
-            // cout << sourcefile << "备份成功！\n";
-            return true;
-        }
-        return false;
-    }
     else
     {
         // cout << "非常抱歉！当前系统不支持该文件类型\n";
@@ -215,13 +216,8 @@ bool ADBackuper::ADmoveFileOrDir(string source, string target)
 {
     if (AllFile(source, target))
     {
-        // cout << "备份成功!\n";
-        if (rmDirOrFile(source))
-        {
-            // cout << "移动成功\n";
-            return true;
-        }
-        return false;
+        rmDirOrFile(source);
+        return true;
     }
     else
     {

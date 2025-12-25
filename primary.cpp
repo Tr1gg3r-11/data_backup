@@ -111,6 +111,12 @@ bool primaryBackuper::rmDirOrFile(string tgtName)
 	struct stat tgtBuff;
 	string filename = tgtName;
 	lstat(tgtName.c_str(), &tgtBuff);
+	int ret = QMessageBox::question(nullptr,"确认","还原后是否删除备份文件/文件夹？",QMessageBox::Yes | QMessageBox::No);
+	bool needdetele = false;
+	if (ret == QMessageBox::Yes)
+	{
+		needdetele = true;
+	}
 	// 读取tgtName文件的具体信息，若是空目录或普通文件直接删除，若是空目录递归删除
 	if (S_ISDIR(tgtBuff.st_mode))
 	{
@@ -145,8 +151,7 @@ bool primaryBackuper::rmDirOrFile(string tgtName)
 				// 若是目录下普通文件，确认是否删除
 				else if (S_ISFIFO(tgtBuff.st_mode) || S_ISLNK(tgtBuff.st_mode) || S_ISREG(tgtBuff.st_mode))
 				{
-					int ret = QMessageBox::question(nullptr,"确认","确定删除当前文件？",QMessageBox::Yes | QMessageBox::No);
-					if (ret == QMessageBox::Yes)
+					if (needdetele)
 					{
 						remove(filename.c_str());
 					}
@@ -167,8 +172,7 @@ bool primaryBackuper::rmDirOrFile(string tgtName)
 	}
 	else if (S_ISFIFO(tgtBuff.st_mode) || S_ISLNK(tgtBuff.st_mode) || S_ISREG(tgtBuff.st_mode))
 	{
-		int ret = QMessageBox::question(nullptr,"确认","确定删除当前文件？",QMessageBox::Yes | QMessageBox::No);
-		if (ret == QMessageBox::Yes)
+		if (needdetele)
 		{
 			remove(filename.c_str());
 			return true;

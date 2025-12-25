@@ -20,7 +20,7 @@ SOURCES += \
     mainwindow.cpp \
     input.cpp \
     backup.cpp \
-    controler.cpp \
+    controller.cpp \
     primary.cpp \
     advanced.cpp \
     compressANDdecompress.cpp \
@@ -36,7 +36,7 @@ HEADERS += \
     mainwindow.h \
     input.h \
     backup.h \
-    controler.h \
+    controller.h \
     primary.h \
     advanced.h \
     compressANDdecompress.h \

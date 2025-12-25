@@ -2,6 +2,6 @@
 #define MAIN_H
 
 #include "utils.h"
-#include "controler.h"
+#include "controller.h"
 
 #endif // MAIN_H
